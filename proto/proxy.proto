@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package internal;
+
+message Empty {
+
+}
+
+message AcceptRuleRequest {
+    Key key = 1;
+}
+
+message DropRuleRequest {
+    Key key = 1;
+    string pattern = 2;
+}
+
+message Key {
+    string src = 1;
+    string dest = 3;
+}
+
+service Proxy {
+    rpc SetAcceptRule(AcceptRuleRequest) returns (Empty);
+    rpc SetDropRule(DropRuleRequest) returns (Empty); 
+}
