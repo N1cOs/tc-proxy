@@ -79,6 +79,12 @@ func (p *Proxy) ServeHTTP(dest http.ResponseWriter, target *http.Request) {
 	}
 	defer src.Body.Close()
 
+	headers := dest.Header()
+	for h, v := range src.Header {
+		headers[h] = v
+	}
+	dest.WriteHeader(src.StatusCode)
+
 	done := make(chan bool)
 	reqParams := requestParams{
 		src:      srcAddr,
