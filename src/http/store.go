@@ -34,7 +34,7 @@ type requestParams struct {
 	doneChan chan bool
 }
 
-func (s *store) add(req requestParams) (*session, string) {
+func (s *store) new(req requestParams) *session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -64,7 +64,7 @@ func (s *store) add(req requestParams) (*session, string) {
 	s.sessions[key][id] = sess
 	log.Printf("added session %s -> %s: id=%s", key.src, key.dest, id)
 
-	return sess, id
+	return sess
 }
 
 func (s *store) remove(id string) error {
@@ -92,10 +92,8 @@ func (s *store) setRule(key key, rule tc.Rule) {
 	defer s.mu.Unlock()
 
 	s.rules[key] = rule
-	for _, sessions := range s.sessions {
-		for _, session := range sessions {
-			session.setRule(rule)
-		}
+	for _, session := range s.sessions[key] {
+		session.setRule(rule)
 	}
 	log.Printf("set %s: src=%s, dest=%s", rule, key.src, key.dest)
 }
