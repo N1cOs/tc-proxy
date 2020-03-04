@@ -17,7 +17,7 @@ message DropRuleRequest {
 
 message Key {
     string src = 1;
-    string dest = 3;
+    string dest = 2;
 }
 
 service Proxy {
