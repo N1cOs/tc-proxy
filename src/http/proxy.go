@@ -86,11 +86,11 @@ func (p *Proxy) ServeHTTP(dest http.ResponseWriter, target *http.Request) {
 		doneChan: done,
 	}
 
-	session, id := p.store.add(reqParams)
+	session := p.store.new(reqParams)
 	go session.run(src.Body, dest)
 	<-done
 
-	err = p.store.remove(id)
+	err = p.store.remove(session.id)
 	if err != nil {
 		http.Error(dest, err.Error(), http.StatusInternalServerError)
 		return
